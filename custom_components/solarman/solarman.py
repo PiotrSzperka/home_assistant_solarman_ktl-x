@@ -102,7 +102,7 @@ class Inverter:
         length = end - start + 1
         request = self.generate_request(start, length, mb_fc)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(10)
+        sock.settimeout(30)
         try:
             sock.connect((self._host, self._port))
             log.debug(request.hex())
@@ -136,7 +136,10 @@ class Inverter:
             if 0 == self.send_request(params, start, end, mb_fc):
                 # retry once
                 if 0 == self.send_request(params, start, end, mb_fc):
-                    result = 0
+                    if 0 == self.send_request(params, start, end, mb_fc):
+                        if 0 == self.send_request(params, start, end, mb_fc):
+                            result = 0
+                    
                     
         if result == 1: 
             self.status_lastUpdate = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
